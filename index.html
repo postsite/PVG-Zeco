@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>PVG Zeco — Site officiel</title>
+<style>
+:root{
+  --bg:#0f1724; --card:#0b1220; --muted:#98a0b3; --accent:#ff6b6b; --glass: rgba(255,255,255,0.04);
+  --radius:14px; --maxw:1100px; --gap:20px;
+}
+*{box-sizing:border-box}
+html,body{height:100%; margin:0;}
+body{
+  font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background:var(--bg); color:#e6eef8;
+  display:flex; flex-direction:column; min-height:100vh;
+}
+a{color:inherit; text-decoration:none}
+.container{width:calc(100% - 40px); max-width:var(--maxw); margin:40px auto; flex:1;}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#ffd36b);
+  display:flex;align-items:center;justify-content:center;color:#051423;font-weight:700;font-size:20px;cursor:pointer}
+h1{font-size:20px;margin:0}
+p.lead{color:var(--muted);margin:0}
+
+.hero{display:grid;grid-template-columns:1fr 420px;gap:var(--gap);align-items:center;margin-top:22px}
+.card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:20px;
+  border-radius:var(--radius);box-shadow: 0 6px 30px rgba(2,6,23,0.6);}
+.bio{font-size:15px;margin-top:10px;color:var(--muted)}
+
+.socials{display:flex;gap:10px;margin-top:12px}
+.socials a{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:var(--glass);
+  backdrop-filter: blur(6px);font-weight:600;color:inherit}
+
+.video-card{display:flex;flex-direction:column;gap:10px}
+.video-embed{position:relative;padding-top:56.25%;border-radius:12px;overflow:hidden}
+.video-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+
+.videos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+.video-link img{display:block;width:100%;border-radius:10px}
+.video-link div{font-size:14px;margin-top:6px;color:var(--muted)}
+
+section{margin-top:28px}
+h2{margin:0 0 12px 0;font-size:18px}
+.muted{color:var(--muted)}
+.stat{background:var(--glass);padding:12px;border-radius:10px;text-align:center;min-width:110px}
+.stat strong{display:block;font-size:18px}
+
+footer{margin:40px 0 20px;color:var(--muted);text-align:center;cursor:pointer}
+@media(max-width:980px){.hero{grid-template-columns:1fr;}.videos-grid{grid-template-columns:repeat(2,1fr)} }
+@media(max-width:520px){.videos-grid{grid-template-columns:1fr}}
+
+.btn{padding:10px 16px;border-radius:10px;font-weight:700;background:linear-gradient(90deg,var(--accent),#ff9a6a);
+  box-shadow:0 8px 30px rgba(255,107,107,0.12);color:#051423;text-align:center;display:inline-block}
+.ghost{padding:10px 14px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.06)}
+
+.fade-in{opacity:0;transform:translateY(6px);transition:all 500ms cubic-bezier(.2,.9,.3,1)}
+.fade-in.visible{opacity:1;transform:none}
+
+.toggle{cursor:pointer;padding:8px;border-radius:10px;background:rgba(255,255,255,0.02)}
+
+#modal{display:none;position:fixed;inset:0;background:rgba(2,6,23,0.8);align-items:center;justify-content:center;
+  padding:20px;z-index:999}
+#modal-content{max-width:960px;width:100%}
+#modal iframe{width:100%;aspect-ratio:16/9;border:0;border-radius:12px;background:#000}
+#close-btn{margin-top:10px;text-align:right}
+
+/* Easter egg */
+#easter-egg {
+  display:none; /* Ne pas afficher au départ */
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.9);
+  color:#fff;
+  font-size:36px;
+  font-weight:bold;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  z-index:9999;
+  text-align:center;
+}
+#confetti {
+  position:absolute;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  overflow:hidden;
+}
+.confetti-piece {
+  position:absolute;
+  width:10px;
+  height:10px;
+  opacity:0.8;
+  animation:fall 3s linear infinite;
+}
+@keyframes fall {
+  0% {transform:translateY(-20px) rotate(0deg);}
+  100% {transform:translateY(100vh) rotate(360deg);}
+}
+
+/* Contact form grid */
+.contact-form { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.contact-form input, .contact-form textarea { width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:inherit; }
+.contact-form label { font-size:13px; color:var(--muted); }
+.contact-form .full { grid-column:span 2; }
+.contact-form button { grid-column:span 2; justify-self:end; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="brand">
+      <div class="logo" id="logo">PVG</div>
+      <div>
+        <h1>PVG Zeco — Le vrai contenu</h1>
+        <p class="lead">Vidéos hebdo, coulisses, lives et défis — abonne-toi !</p>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center">
+      <button class="toggle" id="themeToggle" title="Changer thème">🌓</button>
+      <a class="ghost" href="#contact">Contact</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="card fade-in">
+        <p class="muted">YouTubeur • Créateur</p>
+        <h2>Salut — nous c'est <strong>PVG Zeco</strong> 👋</h2>
+        <p class="bio">On fait des vidéos gaming, sur plein de jeux différents. Sur cette page tu trouveras mes dernières vidéos, les liens vers mes réseaux et comment me contacter.</p>
+
+        <div class="socials">
+          <a href="https://www.youtube.com/@Zelpotron91">📺 YouTube</a>
+          <a href="https://discord.gg/C5uakDNt3C">🌀 Discord</a>
+        </div>
+
+        <div style="margin-top:14px;display:flex;gap:12px;align-items:center">
+          <div class="stat">
+            <span class="muted">Abonnés</span>
+            <strong contenteditable="true">20</strong>
+          </div>
+          <div class="stat">
+            <span class="muted">Vues</span>
+            <strong contenteditable="true">542</strong>
+          </div>
+          <div style="flex:1;text-align:right">
+            <a class="btn" href="#videos">Dernières vidéos</a>
+          </div>
+        </div>
+      </div>
+
+      <aside class="card video-card fade-in">
+        <div class="muted">🎬 Vidéo à la une</div>
+        <div class="video-grid" style="margin-top:8px">
+          <a class="video-link" href="https://www.youtube.com/watch?v=Gi37P_XNYfc"></a>
+        </div>
+      </aside>
+    </section>
+
+    <section id="videos" class="card fade-in">
+      <h2>Dernières vidéos</h2>
+      <p class="muted">Voici nos vidéos les plus récentes 👇</p>
+      <div class="videos-grid">
+        <a class="video-link" href="https://www.youtube.com/watch?v=Mt2ZrDMWFqM"></a>
+        <a class="video-link" href="https://www.youtube.com/watch?v=pc8A2wx3aFk"></a>
+        <a class="video-link" href="https://www.youtube.com/watch?v=ueO-xx_cBeo"></a>
+        <a class="video-link" href="https://www.youtube.com/watch?v=3Yd1bNpz7ok"></a>
+        <a class="video-link" href="https://www.youtube.com/watch?v=AKY6vuA87WU"></a>
+        <a class="video-link" href="https://www.youtube.com/watch?v=ZzR1DDPcPuI"></a>
+      </div>
+    </section>
+
+    <section id="contact" class="card fade-in">
+      <h2>Contact</h2>
+      <p class="muted">Pour propositions, collaborations ou presse — envoie un message.</p>
+      <form class="contact-form" onsubmit="event.preventDefault();contactSend()">
+        <div><label>Nom</label><input id="cname" required></div>
+        <div><label>Email</label><input id="cemail" type="email" required></div>
+        <div class="full"><label>Message</label><textarea id="cmsg" rows="4" required></textarea></div>
+        <div class="full" style="text-align:right"><button class="btn" type="submit">Envoyer</button></div>
+      </form>
+    </section>
+
+  </main>
+
+  <footer id="footer">
+    <p>&copy; <span id="year"></span> PVG Zeco — Tous droits réservés • Réalisé par FIOGaming</p>
+  </footer>
+</div>
+
+<div id="modal">
+  <div id="modal-content">
+    <iframe id="modalIframe" allowfullscreen></iframe>
+    <div id="close-btn"><button class="ghost" onclick="closeModal()">Fermer</button></div>
+  </div>
+</div>
+
+<div id="easter-egg">
+  Comment t'as trouvé ça MDR ?
+  <div id="confetti"></div>
+  <button class="btn" onclick="hideEasterEgg()">Fermer</button>
+</div>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+// fade-in
+const fades = document.querySelectorAll('.fade-in');
+const obs = new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:0.12});
+fades.forEach(f=>obs.observe(f));
+
+// theme toggle
+document.getElementById('themeToggle').addEventListener('click',()=>{
+  const body=document.body;
+  if(body.dataset.theme==='light'){
+    body.dataset.theme='dark';
+    document.documentElement.style.setProperty('--bg','#0f1724');
+    document.documentElement.style.setProperty('--card','#0b1220');
+    document.documentElement.style.setProperty('--muted','#98a0b3');
+    document.body.style.color='#e6eef8';
+  }else{
+    body.dataset.theme='light';
+    document.documentElement.style.setProperty('--bg','#f6f8fb');
+    document.documentElement.style.setProperty('--card','#ffffff');
+    document.documentElement.style.setProperty('--muted','#556270');
+    document.body.style.color='#04202c';
+  }
+});
+
+// vidéos
+document.querySelectorAll('.video-link').forEach(link=>{
+  const url=link.href;
+  const match=url.match(/v=([^&]+)/);
+  if(!match)return;
+  const id=match[1];
+  const img=document.createElement('img');
+  img.src=`https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+  link.appendChild(img);
+  fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json`)
+    .then(r=>r.json()).then(data=>{
+      const title=document.createElement('div');
+      title.textContent=data.title;
+      link.appendChild(title);
+    }).catch(()=>{});
+  link.addEventListener('click',e=>{
+    e.preventDefault(); openVideo(id);
+  });
+});
+
+// modal
+function openVideo(id){
+  const modal=document.getElementById('modal');
+  const iframe=document.getElementById('modalIframe');
+  iframe.src=`https://www.youtube.com/embed/${id}?autoplay=1&rel=0`;
+  modal.style.display='flex';
+}
+function closeModal(){
+  const modal=document.getElementById('modal');
+  const iframe=document.getElementById('modalIframe');
+  iframe.src='';
+  modal.style.display='none';
+}
+document.getElementById('modal').addEventListener('click',e=>{
+  if(e.target.id==='modal') closeModal();
+});
+
+// contact
+function contactSend(){
+  const name=document.getElementById('cname').value;
+  const email=document.getElementById('cemail').value;
+  const msg=document.getElementById('cmsg').value;
+  if(!name||!email||!msg)return alert('Merci de remplir tous les champs');
+  const subject=encodeURIComponent('Contact depuis le site — '+name);
+  const body=encodeURIComponent(msg+'\n\n—\n'+name+'\n'+email);
+  window.location.href=`mailto:ton@email.com?subject=${subject}&body=${body}`;
+}
+
+// Easter egg (keyboard)
+let code='';
+document.addEventListener('keydown',e=>{
+  code+=e.key.toUpperCase();
+  if(code.includes('ZECO')){
+    showEasterEgg();
+    code='';
+  }
+  if(code.length>10) code=code.slice(-10);
+});
+
+// Easter egg (logo click)
+let logoClicks=0;
+document.getElementById('logo').addEventListener('click',()=>{
+  logoClicks++;
+  if(logoClicks>=5){
+    showEasterEgg();
+    logoClicks=0;
+  }
+});
+
+// Easter egg (footer click)
+let footerClicks=0;
+document.getElementById('footer').addEventListener('click',()=>{
+  footerClicks++;
+  if(footerClicks>=3){
+    showEasterEgg();
+    footerClicks=0;
+  }
+});
+
+// Easter egg (maintenir bouton thème)
+let themePressTimer;
+const themeButton = document.getElementById('themeToggle');
+themeButton.addEventListener('mousedown',()=>{ themePressTimer=setTimeout(showEasterEgg,1000); });
+themeButton.addEventListener('mouseup',()=>{ clearTimeout(themePressTimer); });
+themeButton.addEventListener('mouseleave',()=>{ clearTimeout(themePressTimer); });
+
+function showEasterEgg(){
+  const overlay=document.getElementById('easter-egg');
+  overlay.style.display='flex';
+  const confetti=document.getElementById('confetti');
+  confetti.innerHTML='';
+  for(let i=0;i<150;i++){
+    const c=document.createElement('div');
+    c.className='confetti-piece';
+    c.style.left=Math.random()*100+'%';
+    c.style.background='hsl('+Math.random()*360+',80%,60%)';
+    c.style.animationDuration=(1+Math.random()*2)+'s';
+    confetti.appendChild(c);
+  }
+}
+function hideEasterEgg(){
+  const overlay=document.getElementById('easter-egg');
+  overlay.style.display='none';
+  document.getElementById('confetti').innerHTML='';
+}
+</script>
+</body>
+</html>
