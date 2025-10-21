@@ -275,7 +275,7 @@ function contactSend(){
   if(!name||!email||!msg)return alert('Merci de remplir tous les champs');
   const subject=encodeURIComponent('Contact depuis le site — '+name);
   const body=encodeURIComponent(msg+'\n\n—\n'+name+'\n'+email);
-  window.location.href=`mailto:ton@email.com?subject=${subject}&body=${body}`;
+  window.location.href=`mailto:arthur.moeglin@gmail.com?subject=${subject}&body=${body}`;
 }
 
 // Easter egg (keyboard)
